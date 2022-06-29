@@ -162,7 +162,9 @@ def Circle(o,r,h,a1,a2):
 
     y = (d/(d-z))*((r*sin(radians(a2))*sin(radians(a1)+o))+h*cos(radians(a2)))
 
-    return [x,y,(d-z)]
+
+    #FIX THIS!!!!
+    return [x,y,(cos(radians(a1+(d-z))*sin(radians(a2-(d-z)))))]
 
 def Cart(x,y,z,a1,a2):
     return Circle(atan2(radians(y),radians(x)),sqrt(x**2+y**2),z,a1,a2)
