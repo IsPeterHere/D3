@@ -227,6 +227,8 @@ class Screen:
 
         
 screen= Screen()
+
+'''
 for x in range(3):
     for z in range(3):
         for i in range(3):
@@ -234,17 +236,21 @@ for x in range(3):
             Cube = Cuboid([0,0,0],[30,30,30])
             Cube.setpos([30*x,30*i,30*z])
             screen.add(Cube)
+'''
+Cube = Cuboid([0,0,0],[30,30,30])
+Cube.setpos([-10,-15,-15])
+screen.add(Cube)
 
 Hr = 0
-Vr = 20
+Vr = 0
 
 while True:
     screen.update()
 
 
-    Vr += 0.1
+    #Vr += 0.1
 
-    Hr += 1
+    #Hr += 0.1
     #Hr += int(input())
     #print(x)
     #Vr += int(input())
