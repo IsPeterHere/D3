@@ -28,10 +28,10 @@ class Tools:
                 
                     if Count == Constant:
 
-                        if flip == 1:
+                            if flip == 1:
 
-                            for x in range(4):
-                                polygons[-1][x][Constant] +=  extent[Constant]
+                                for x in range(4):
+                                    polygons[-1][x][Constant] +=  extent[Constant]
                         
                     else:
                         if half:
@@ -150,7 +150,7 @@ def Z(o,r,h,a1,a2):
 
 def Circle(o,r,h,a1,a2):
 
-    z = Z(0,r,h,a1,a2)
+    z = Z(o,r,h,a1,a2)
 
     if d-z <= 0:
         return ["Q","Q"]
