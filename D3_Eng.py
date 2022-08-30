@@ -102,6 +102,8 @@ class Window(tools.Bindings):
         self.y = 0
         self.z = 0
 
+        self.frame_number = 0
+
         self.cuboids = []
 
         self.monitored_current = []
@@ -140,6 +142,8 @@ class Window(tools.Bindings):
         self.height = self.window.winfo_height()
         
         self.inputs = []
+
+        self.frame_number += 1
         #-----
         end = time.time()
         self.pause = max(1,int(50-((end-start)*1000)))

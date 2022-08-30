@@ -1,5 +1,5 @@
 import D3_Eng as d3
-
+"""
 def door(x,y,z,colour,rot):
     rim = 5
     height = 150
@@ -13,17 +13,59 @@ def door(x,y,z,colour,rot):
         yl = width
 
 
-    c = d3.Cuboid([x,y,height/2-rim/2],[rim,rim,height-rim/4])
+    c = d3.Cuboid([x,y,height/2-rim/2+z],[rim,rim,height-rim/4])
     c.colour = colour
     w.add(c)
     
-    c = d3.Cuboid([x+xl,y+yl,height/2-rim/2],[rim,rim,height-rim/4])
+    c = d3.Cuboid([x+xl,y+yl,height/2-rim/2+z],[rim,rim,height-rim/4])
     c.colour = colour
     w.add(c)
 
-    c = d3.Cuboid([x+(xl/2),y+(yl/2),height],[xl+rim,yl+rim,rim])
+    c = d3.Cuboid([x+(xl/2),y+(yl/2),height+z],[xl+rim,yl+rim,rim])
     c.colour = colour
     w.add(c)
+
+    draw_diagonal([x+xl/2,y+yl/2,height/2-2],[width-7-(width-10)*rot,3+(width-10)*rot,height-4])
+"""
+class Door:
+    def __init__(self,x,y,z,colour,rot):
+        self.x = x
+        self.y = y
+        self.z = z
+        self.colour = colour
+        self.rot = rot
+
+        self.rim = 5
+        self.height = 150
+        self.width = 70
+
+        self.xl = 0
+        self.yl = 0
+        if rot == 0:
+            self.xl = self.width
+        else:
+            self.yl = self.width
+
+    def make(self):
+        c = d3.Cuboid([self.x,self.y,self.height/2-self.rim/2+self.z],[self.rim,self.rim,self.height-self.rim/4])
+        c.colour = self.colour
+        w.add(c)
+        
+        c = d3.Cuboid([self.x+self.xl,self.y+self.yl,self.height/2-self.rim/2+self.z],[self.rim,self.rim,self.height-self.rim/4])
+        c.colour = self.colour
+        w.add(c)
+
+        c = d3.Cuboid([self.x+(self.xl/2),self.y+(self.yl/2),self.height+self.z],[self.xl+self.rim,self.yl+self.rim,self.rim])
+        c.colour = self.colour
+        w.add(c)
+
+        c = d3.Cuboid([self.x+self.xl/2,self.y+self.yl/2,self.height/2-2],[self.width-7-(self.width-10)*self.rot,3+(self.width-10)*self.rot,self.height-4])
+        c.colour = self.colour
+        w.add(c)
+    
+    def open(self):
+        draw_diagonal([self.x+self.xl/2,self.y+self.yl/2,self.height/2-2],[self.width-7-(self.width-10)*self.rot,3+(self.width-10)*self.rot,self.height-4])
+
 
 def desk(x,y,z,colour,rot):
     depth = 5
@@ -42,12 +84,24 @@ def desk(x,y,z,colour,rot):
     w.add(c)
 
 
+def draw_diagonal(start,end):
+    grad = (end[1]-start[1])/(end[0]-start[0])
+    
+    x = start[0]
+    y = start[1]
 
+    while x < end[0]:
+        x += 1
+        y += grad
 
+        print(grad)
+
+        c = d3.Cuboid([x,round(y,0),end[2]/2],[1,1,end[2]])
+        c.colour = "blue"
+        w.add(c)
 
 def Main(window):
     d3.mouse_direction(window)
-
     if "w" in window.inputs:
         player.move(y= 3) 
     elif "s" in window.inputs:
@@ -80,7 +134,13 @@ player = d3.Cuboid([0,0,0],[5,5,5])
 player.colour = "red"
 w.add(player)
 
-door(0,0,0,"brown",1)
-door(0,100,0,"green",0)
+door1 = Door(0,0,0,"brown",1)
+door1.make()
+
+door2 = Door(0,100,0,"green",0)
+door2.make()
+
+door1.open()
 desk(150,150,50,"blue",0)
+
 w.start(Main)
