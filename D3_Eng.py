@@ -62,12 +62,13 @@ class Cuboid:
 
     def touching(self,cuboid):
         
-        if self.__centre[0]+self.__extent[0]/2-cuboid.__centre[0]+cuboid.__extent[0]/2 > 0:
-            return True
-        if self.__centre[1]+self.__extent[1]/2-cuboid.__centre[1]+cuboid.__extent[1]/2 > 0:
-            return True
-        if self.__centre[2]+self.__extent[2]/2-cuboid.__centre[2]+cuboid.__extent[2]/2 > 0:
-            return True
+        if self.__centre[0]-cuboid.__centre[0] > self.__extent[0]+cuboid.__extent[0]:
+            print("treu1")
+            if self.__centre[1]-cuboid.__centre[1] > self.__extent[1]+cuboid.__extent[1]:
+                print("treu2")
+                if self.__centre[2]-cuboid.__centre[2] > self.__extent[2]+cuboid.__extent[2]:
+                    print("treu3")
+                    return True
         
         return False
 
@@ -244,6 +245,7 @@ class Cuboid_group:
             for self_c in self.cuboids:
                 for other_c in cuboid_or_group.cuboids:
                     if self_c.touching(other_c):
+                        print(True)
                         return True
         else:
             for self_c in self.cuboids:

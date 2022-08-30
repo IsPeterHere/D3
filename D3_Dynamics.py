@@ -15,6 +15,7 @@ class Dynamic:
         self.__z_res(z)
 
     def __x_res(self,pull):
+        self.x_speed+= pull
         
         if self.x_speed > 0 :
             self.x_speed = int(self.x_speed )-1
@@ -37,6 +38,8 @@ class Dynamic:
             return None
 
     def __y_res(self,pull):
+        self.y_speed+= pull
+        
         if self.y_speed > 0 :
             self.y_speed = int(self.y_speed )-1
             
@@ -58,6 +61,8 @@ class Dynamic:
             return None
         
     def __z_res(self,pull):
+        self.z_speed+= pull
+        
         if self.z_speed > 0 :
             self.z_speed = int(self.z_speed )-1
             
