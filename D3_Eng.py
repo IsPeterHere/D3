@@ -61,19 +61,24 @@ class Cuboid:
             self.faces = tools.GetFaces(self.__extent,self.__centre)
 
     def touching(self,cuboid):
+        
         if self.__centre[0]+self.__extent[0]/2-cuboid.__centre[0]+cuboid.__extent[0]/2 > 0:
             return True
-            if self.__centre[1]+self.__extent[1]/2-cuboid.__centre[1]+cuboid.__extent[1]/2 > 0:
-                return True
-                if self.__centre[2]+self.__extent[2]/2-cuboid.__centre[2]+cuboid.__extent[2]/2 > 0:
-                    return True
+        if self.__centre[1]+self.__extent[1]/2-cuboid.__centre[1]+cuboid.__extent[1]/2 > 0:
+            return True
+        if self.__centre[2]+self.__extent[2]/2-cuboid.__centre[2]+cuboid.__extent[2]/2 > 0:
+            return True
+        
         return False
 
     def move(self,x=0,y=0,z=0):
-        print(self.__centre)
         self.__centre[0]+= x
         self.__centre[1]+= y
         self.__centre[2]+= z
+        self.faces = tools.GetFaces(self.__extent,self.__centre)
+
+    def set_pos(self,cord):
+        self.__centre = cord
         self.faces = tools.GetFaces(self.__extent,self.__centre)
 
 class Window(tools.Bindings):
@@ -111,11 +116,20 @@ class Window(tools.Bindings):
         self.l_is_pressed = False
 
 
-    def add(self,cuboid):
-        self.cuboids.append(cuboid)
+    def add(self,cuboid_shell):
+        if isinstance(cuboid_shell,Cuboid_group):
+            for cuboid in cuboid_shell.cuboids:
+                if cuboid not in self.cuboids:
+                    self.cuboids.append(cuboid)
+        else:  
+            self.cuboids.append(cuboid_shell)
 
-    def remove(self,cuboid):
-        self.cuboids.remove(cuboid)
+    def remove(self,cuboid_shell):
+        if isinstance(cuboid_shell,Cuboid_group):
+            for cuboid in cuboid_shell.cuboids:
+                self.cuboids.remove(cuboid)
+        else:  
+            self.cuboids.remove(cuboid_shell)
 
     def start(self,frame_function = None):
         if frame_function == None:
@@ -204,7 +218,56 @@ def mouse_direction(window):
         window.vertical_rotation +=(window.height/2-window.mouse_current_position[1])/100
 
 
+class Cuboid_group:
 
+    def __init__(self,centre):
+        self.cuboids = []
+        self.centre = centre
+
+    def add(self,cuboid_s):
+        if isinstance(cuboid_s,list):
+            for c in cuboid_s:
+                self.cuboids.add(c)
+        else:
+            self.cuboids.append(cuboid_s)
+
+    def remove(self,cuboid_s):
+        if isinstance(cuboid_s,list):
+            for c in cuboid_s:
+                self.cuboids.remove(c)
+        else:
+            self.cuboids.remove(cuboid_s)
+                
+
+    def touching(self,cuboid_or_group):
+        if isinstance(cuboid_or_group,Cuboid_group):
+            for self_c in self.cuboids:
+                for other_c in cuboid_or_group.cuboids:
+                    if self_c.touching(other_c):
+                        return True
+        else:
+            for self_c in self.cuboids:
+                if self_c.touching(cuboid_or_group):
+                        return True
+        return False
+
+    def move(self,x=0,y=0,z=0):
+        for c in self.cuboids:
+            c.move(x,y,z)
+            self.centre[0] += x
+            self.centre[1] += y
+            self.centre[2] += z
+
+    def set_pos(self,cord):
+        change_x = self.centre[0] - cord[0]
+        chnage_y = self.centre[1] - cord[1]
+        change_z = self.centre[2] - cord[2]
+        for c in self.cuboids:
+            c.move(change_x,chnage_y,chnage_z)
+            self.centre[0] = cord[0]
+            self.centre[1] = cord[1]
+            self.centre[2] = cord[2]
+    
 
 if __name__ == "__main__":
          
