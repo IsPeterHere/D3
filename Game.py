@@ -5,7 +5,11 @@ import D3_Dynamics as d3d
 def Main(window):
     global last_mark
     d3.mouse_direction(window)
+    
     Move_group.call(z = -2)
+
+    window.centre(player.centre())
+    
     if "w" in window.inputs:
         Move_group.y_speed = 4
     elif "s" in window.inputs:
@@ -14,6 +18,10 @@ def Main(window):
         Move_group.x_speed = 4
     elif "d" in window.inputs:
         Move_group.x_speed = -4
+
+    if " " in window.inputs:
+        Move_group.z_speed = 15
+
         
 
     
@@ -42,5 +50,6 @@ for i in range(100):
     c.colour = "green"
     solids.add(c)
     w.add(solids)
-    
+
+w.vertical_rotation = 195  
 w.start(Main)

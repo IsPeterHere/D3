@@ -26,14 +26,22 @@ class Dynamic:
             return None
 
         if self.x_speed > 0 :
-            for num in reversed(range(0,self.x_speed)):
-                if not self.solid_group.touching(self.cuboid_group):
-                    self.cuboid_group.move(x = self.x_speed)
+            for num in range(0,self.x_speed):
+                self.cuboid_group.move(x = 1)
+                if self.solid_group.touching(self.cuboid_group):
+                    self.cuboid_group.move(x = -1)
+                    self.x_speed = 0
+                    break
+
+                    
             
         elif self.x_speed < 0 :
             for num in range(self.x_speed,0):
-                if not self.solid_group.touching(self.cuboid_group):
-                    self.cuboid_group.move(x = self.x_speed)
+                self.cuboid_group.move(x = -1)
+                if self.solid_group.touching(self.cuboid_group):
+                    self.cuboid_group.move(x = 1)
+                    self.x_speed = 0
+                    break
         else:
             return None
 
@@ -49,14 +57,22 @@ class Dynamic:
             return None
 
         if self.y_speed > 0 :
-            for num in reversed(range(0,self.y_speed)):
-                if not self.solid_group.touching(self.cuboid_group):
-                    self.cuboid_group.move(y = self.y_speed)
+            for num in range(0,self.y_speed):
+                self.cuboid_group.move(y = 1)
+                if self.solid_group.touching(self.cuboid_group):
+                    self.cuboid_group.move(y = -1)
+                    self.y_speed = 0 
+                    break
+
+                    
             
         elif self.y_speed < 0 :
             for num in range(self.y_speed,0):
-                if not self.solid_group.touching(self.cuboid_group):
-                    self.cuboid_group.move(y = self.y_speed)
+                self.cuboid_group.move(y = -1)
+                if self.solid_group.touching(self.cuboid_group):
+                    self.cuboid_group.move(y = 1)
+                    self.y_speed = 0
+                    break
         else:
             return None
         
@@ -72,13 +88,21 @@ class Dynamic:
             return None
 
         if self.z_speed > 0 :
-            for num in reversed(range(0,self.z_speed)):
-                if not self.solid_group.touching(self.cuboid_group):
-                    self.cuboid_group.move(z = self.z_speed)
+            for num in range(0,self.z_speed):
+                self.cuboid_group.move(z = 1)
+                if self.solid_group.touching(self.cuboid_group):
+                    self.cuboid_group.move(z = -1)
+                    self.z_speed = 0
+                    break
+
+                    
             
         elif self.z_speed < 0 :
             for num in range(self.z_speed,0):
-                if not self.solid_group.touching(self.cuboid_group):
-                    self.cuboid_group.move(z = self.z_speed)
+                self.cuboid_group.move(z = -1)
+                if self.solid_group.touching(self.cuboid_group):
+                    self.cuboid_group.move(z = 1)
+                    self.z_speed = 0
+                    break
         else:
             return None

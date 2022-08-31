@@ -54,20 +54,23 @@ class Cuboid:
 
     def centre(self,new = None):
         if new == None:
-            if key == None:
-                return self.__centre
+            return self.__centre
         else:
             __centre = new
             self.faces = tools.GetFaces(self.__extent,self.__centre)
 
-    def touching(self,cuboid):
+    def extent(self,new = None):
+        if new == None:
+            return self.__extent
+        else:
+            __extent = new
+            self.faces = tools.GetFaces(self.__extent,self.__centre)
+
+    def touching(self,other_cuboid):
         
-        if self.__centre[0]-cuboid.__centre[0] > self.__extent[0]+cuboid.__extent[0]:
-            print("treu1")
-            if self.__centre[1]-cuboid.__centre[1] > self.__extent[1]+cuboid.__extent[1]:
-                print("treu2")
-                if self.__centre[2]-cuboid.__centre[2] > self.__extent[2]+cuboid.__extent[2]:
-                    print("treu3")
+        if abs(self.centre()[0] -other_cuboid.centre()[0]) < abs(self.extent()[0]/2+other_cuboid.extent()[0]/2):
+            if abs(self.centre()[1] -other_cuboid.centre()[1]) < abs(self.extent()[1]/2+other_cuboid.extent()[1]/2):
+                if abs(self.centre()[2] -other_cuboid.centre()[2]) < abs(self.extent()[2]/2+other_cuboid.extent()[2]/2):
                     return True
         
         return False
@@ -150,7 +153,6 @@ class Window(tools.Bindings):
 
         self.cart_maths.update(self)
         self.__render()
-
         self.width = self.window.winfo_width()
         self.height = self.window.winfo_height()
         
@@ -204,6 +206,15 @@ class Window(tools.Bindings):
         
     def clear(self):
         self.canvas.delete("all")
+
+    def centre(self,cord = None):
+
+        if cord == None:
+            return [self.x,self.y,self.z]
+        else:
+            self.x = cord[0]
+            self.y = cord[1]
+            self.z = cord[2]
         
         
 def mouse_direction(window):
@@ -213,10 +224,12 @@ def mouse_direction(window):
         window.horizontal_rotation += (window.width/2-window.mouse_current_position[0])/100
     elif window.mouse_current_position[0]+40 < window.width/2:
         window.horizontal_rotation += (window.width/2-window.mouse_current_position[0])/100
+    
     if window.mouse_current_position[1]-40 > window.height/2:
         window.vertical_rotation +=(window.height/2-window.mouse_current_position[1])/100
     elif window.mouse_current_position[1]+40 < window.height/2:
         window.vertical_rotation +=(window.height/2-window.mouse_current_position[1])/100
+    
 
 
 class Cuboid_group:
@@ -245,7 +258,6 @@ class Cuboid_group:
             for self_c in self.cuboids:
                 for other_c in cuboid_or_group.cuboids:
                     if self_c.touching(other_c):
-                        print(True)
                         return True
         else:
             for self_c in self.cuboids:
@@ -256,9 +268,9 @@ class Cuboid_group:
     def move(self,x=0,y=0,z=0):
         for c in self.cuboids:
             c.move(x,y,z)
-            self.centre[0] += x
-            self.centre[1] += y
-            self.centre[2] += z
+        self.centre[0] += x
+        self.centre[1] += y
+        self.centre[2] += z
 
     def set_pos(self,cord):
         change_x = self.centre[0] - cord[0]
@@ -266,9 +278,9 @@ class Cuboid_group:
         change_z = self.centre[2] - cord[2]
         for c in self.cuboids:
             c.move(change_x,chnage_y,chnage_z)
-            self.centre[0] = cord[0]
-            self.centre[1] = cord[1]
-            self.centre[2] = cord[2]
+        self.centre[0] = cord[0]
+        self.centre[1] = cord[1]
+        self.centre[2] = cord[2]
     
 
 if __name__ == "__main__":
