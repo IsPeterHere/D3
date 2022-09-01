@@ -197,15 +197,18 @@ class Window(tools.Bindings):
 
 
         #clar screen and draw all objects
-        self.clear()
+        self.__clear()
         
     
         for face in self.faces_to_render:
             face.draw(self.canvas)
 
         
-    def clear(self):
+    def __clear(self):
         self.canvas.delete("all")
+
+    def clear(self):
+        self.cuboids = []
 
     def centre(self,cord = None):
 
@@ -273,9 +276,9 @@ class Cuboid_group:
         self.centre[2] += z
 
     def set_pos(self,cord):
-        change_x = self.centre[0] - cord[0]
-        chnage_y = self.centre[1] - cord[1]
-        change_z = self.centre[2] - cord[2]
+        change_x = -self.centre[0] + cord[0]
+        chnage_y = -self.centre[1] + cord[1]
+        chnage_z = -self.centre[2] + cord[2]
         for c in self.cuboids:
             c.move(change_x,chnage_y,chnage_z)
         self.centre[0] = cord[0]
