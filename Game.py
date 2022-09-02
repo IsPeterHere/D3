@@ -6,9 +6,9 @@ from math import cos,radians,degrees
 class Game:
 
     def __init__(self):
-        body = d3.Cuboid([2,0,40],[10,10,10])
+        body = d3.Cuboid([2,-60,40],[10,10,10])
         body.colour = "red"
-        leg  = d3.Cuboid([2,0,30],[5,5,10])
+        leg  = d3.Cuboid([2,-60,30],[5,5,10])
         leg.colour = "red"
 
         self.last_mark = -1
@@ -58,7 +58,7 @@ class Game:
             self.solids = self.load_new(window)
             window.clear()
             
-            for i in old_solids.cuboids[-5:]:
+            for i in old_solids.cuboids[-6:]:
                 self.solids.cuboids.insert(0,i)
                 
             self.Move_group.solid_group = self.solids
