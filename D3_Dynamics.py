@@ -11,7 +11,7 @@ class Dynamic:
 
     def call(self,x= 0, y = 0, z = 0):
         if self.solid_group.touching(self.cuboid_group):
-            self.cuboid_group.move(z = 1)
+            self.cuboid_group.move(z = 5)
         self.__x_res(x)
         self.__y_res(y)
         self.__z_res(z)
