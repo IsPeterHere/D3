@@ -67,6 +67,8 @@ class Cuboid:
             self.faces = tools.GetFaces(self.__extent,self.__centre)
 
     def touching(self,other_cuboid):
+        if self == other_cuboid:
+            return False
         
         if abs(self.centre()[0] -other_cuboid.centre()[0]) < abs(self.extent()[0]/2+other_cuboid.extent()[0]/2):
             if abs(self.centre()[1] -other_cuboid.centre()[1]) < abs(self.extent()[1]/2+other_cuboid.extent()[1]/2):

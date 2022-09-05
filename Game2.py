@@ -49,13 +49,18 @@ class Tools:
     def less_limb(self,window):
         if len(self.limbs) > 0:
             less = random.choice(self.limbs)
-            
+            while less == self.body and len(self.limbs) >=2:
+                less = random.choice(self.limbs)
+            while less == self.head and len(self.limbs) >1:
+                less = random.choice(self.limbs)
+                
             group = d3.Cuboid_group([0,0,0])
             group.add(less)
             group.id = self.limbs.index(less)
             window.add(group)
             self.limbs.remove(less)
             self.player_shell.remove(less)
+            self.solids.add(less)
             self.lost_limbs.append(d3d.Dynamic(group,self.solids))
 
     def load(self,window):
@@ -97,9 +102,9 @@ class Tools:
 
         if self.jump ==  True:
             if " " in window.inputs:
+                self.less_limb(window)
                 self.Move_group.z_speed = 20
                 self.jump = False
-                self.less_limb(window)
 
         if self.player_shell.centre[2] < -700 :
             self.Move_group.z_speed = -5
@@ -107,6 +112,7 @@ class Tools:
             if self.player_shell.centre[2] < -730:
                 self.state_change = True
                 self.lost_limbs = []
+                self.sate = 0
                 
         self.load(window)
         for i in self.lost_limbs:
@@ -119,10 +125,6 @@ class Game(Tools):
         self.state_change = True
         self.jump = False
         self.lost_limbs = []
-        
-        self.solids = d3.Cuboid_group([0,0,0])
-        self.player_shell = d3.Cuboid_group([0,0,0])
-        self.Move_group = d3d.Dynamic(self.player_shell,self.solids)
 
     
 
@@ -136,10 +138,13 @@ class Game(Tools):
 
     
     def main(self,window):
-        print(len(window.cuboids))
         if self.state_change == True:
             if self.state == 0:
                 window.clear()
+                self.save_cords = [0,0,0]
+                self.solids = d3.Cuboid_group([0,0,0])
+                self.player_shell = d3.Cuboid_group([0,0,0])
+                self.Move_group = d3d.Dynamic(self.player_shell,self.solids)
 
                 self.player_load(0,0,0)
                 self.player_shell.centre = [0,0,0]
@@ -157,10 +162,10 @@ class Game(Tools):
                 window.add(c)
                 self.solids.add(c)
                 
-                c = d3.Cuboid([-98,88,-50],[40,40,40])
-                c.colour = "red"
-                window.add(c)
-                self.solids.add(c)
+                self.win = d3.Cuboid([-98,88,-50],[40,40,40])
+                self.win.colour = "red"
+                window.add(self.win)
+                self.solids.add(self.win)
                 
                 window.vertical_rotation = 195
                 window.horizontal_rotation = 250
@@ -168,7 +173,38 @@ class Game(Tools):
                 self.state_change = False
 
             if self.state == 1:
-                pass
+                window.clear()
+
+                self.solids = d3.Cuboid_group([0,0,0]) 
+                self.player_shell = d3.Cuboid_group([0,0,0])
+                self.player_shell.centre = self.save_cords
+                self.Move_group = d3d.Dynamic(self.player_shell,self.solids)
+
+                self.player_load(0,0,0)
+                self.player_shell.centre = [0,0,0]
+
+                self.player_forward(0,0,0)
+                window.add(self.player_shell)
+
+                c = d3.Cuboid([-98,88,-50],[40,40,40])
+                c.colour = "green"
+                window.add(c)
+                self.solids.add(c)
+                
+                c = d3.Cuboid([-130,88,-90],[40,40,40])
+                c.colour = "green"
+                window.add(c)
+                self.solids.add(c)
+                
+                self.win = d3.Cuboid([-130,120,-90],[40,40,40])
+                self.win.colour = "red"
+                window.add(self.win)
+                self.solids.add(self.win)
+                
+                window.vertical_rotation = 195
+                window.horizontal_rotation = 250
+
+                self.state_change = False
                 
         else:
 
@@ -183,6 +219,66 @@ class Game(Tools):
                 if len(self.player_shell.cuboids) == 0:
                     self.state_change = True
                     self.lost_limbs = []
+
+                self.player_shell.move(z=-1)
+                if self.player_shell.touching(self.win):
+                    self.state_change = True
+                    self.state += 1
+                    self.lost_limbs = []
+                    self.player_shell.move(z=1)
+                    self.save_cords = self.player_shell.centre
+                else:
+                    self.jump = False
+                    self.player_shell.move(z=1)
+
+            if self.state == 0:
+                
+                window.horizontal_rotation = 160-degrees(cos(radians(self.player_shell.centre[1]/2)))/6
+                window.vertical_rotation = 175+degrees(cos(radians(self.player_shell.centre[2]/4)))/2
+                window.centre(self.player_shell.centre)
+
+                self.move(window)
+
+                if len(self.player_shell.cuboids) == 0:
+                    self.state_change = True
+                    self.lost_limbs = []
+
+                self.player_shell.move(z=-1)
+                if self.player_shell.touching(self.win):
+                    self.state_change = True
+                    self.state += 1
+                    self.lost_limbs = []
+                    self.player_shell.move(z=1)
+                    self.save_cords = self.player_shell.centre
+                else:
+                    self.jump = False
+                    self.player_shell.move(z=1)
+
+            if self.state == 0:
+                
+                window.horizontal_rotation = 160-degrees(cos(radians(self.player_shell.centre[1]/2)))/6
+                window.vertical_rotation = 175+degrees(cos(radians(self.player_shell.centre[2]/4)))/2
+                window.centre(self.player_shell.centre)
+
+                self.move(window)
+
+                if len(self.player_shell.cuboids) == 0:
+                    self.state_change = True
+                    self.lost_limbs = []
+
+                self.player_shell.move(z=-1)
+                if self.player_shell.touching(self.win):
+                    self.state_change = True
+                    self.state += 1
+                    self.lost_limbs = []
+                    self.player_shell.move(z=1)
+                    self.save_cords = self.player_shell.centre
+                else:
+                    self.jump = False
+                    self.player_shell.move(z=1)
+
+
+            
             
                 
 
