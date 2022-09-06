@@ -64,10 +64,15 @@ class Tools:
             group.add(less)
             group.id = self.limbs.index(less)
             window.add(group)
+
             self.limbs.remove(less)
+
             self.player_shell.remove(less)
             self.solids.add(less)
-            self.lost_limbs.append(d3d.Dynamic(group,self.solids))
+            dyn = d3d.Dynamic(group,self.solids)
+            dyn.x_speed = self.Move_group.x_speed
+            dyn.y_speed = self.Move_group.y_speed
+            self.lost_limbs.append(dyn)
 
     def load(self,window):
         window.remove(self.player_shell)
@@ -105,22 +110,23 @@ class Tools:
             else:
                 self.jump = False
                 self.player_shell.move(z=1)
-
+                
+        self.load(window)
+         
         if self.jump ==  True:
             if " " in window.inputs:
                 self.less_limb(window)
                 self.Move_group.z_speed = 20
                 self.jump = False
-
+        
         if self.player_shell.centre[2] < -700 :
             self.Move_group.z_speed = -5
             self.less_limb(window)
             if self.player_shell.centre[2] < -730:
                 self.state_change = True
                 self.lost_limbs = []
-                self.sate = 0
-                
-        self.load(window)
+                self.state = 0
+            
         for i in self.lost_limbs:
             i.call(z = -random.randint(1,3))
         
@@ -182,8 +188,18 @@ class Game(Tools):
                 window.clear()
                 window.add(self.player_shell)
 
-                self.solids = d3.Cuboid_group([0,0,0]) 
+                self.solids.cuboids = []
 
+                c = d3.Cuboid([0,0,-50],[40,40,40])
+                c.colour = "grey"
+                window.add(c)
+                self.solids.add(c)
+                
+                c = d3.Cuboid([0,88,-50],[40,40,40])
+                c.colour = "grey"
+                window.add(c)
+                self.solids.add(c)
+                
                 c = d3.Cuboid([-98,88,-50],[40,40,40])
                 c.colour = "gold"
                 window.add(c)
@@ -209,55 +225,238 @@ class Game(Tools):
 
                 self.state_change = False
                 
-        else:
+            elif self.state == 2:
+                window.clear()
+                window.add(self.player_shell)
+                self.player_load(self.save_cords[0],self.save_cords[1],self.save_cords[2])
 
-            if self.state == 0:
+                self.solids.cuboids = []
+
+                c = d3.Cuboid([0,0,-50],[40,40,40])
+                c.colour = "grey"
+                window.add(c)
+                self.solids.add(c)
                 
-                window.horizontal_rotation = 160-degrees(cos(radians(self.player_shell.centre[1]/2)))/6
-                window.vertical_rotation = 175+degrees(cos(radians(self.player_shell.centre[2]/4)))/2
-                window.centre(self.player_shell.centre)
-
-                self.move(window)
-
-                if len(self.player_shell.cuboids) == 0:
-                    self.state_change = True
-                    self.lost_limbs = []
-
-                self.player_shell.move(z=-1)
-                if self.player_shell.touching(self.win):
-                    self.state_change = True
-                    self.state = 1
-                    self.lost_limbs = []
-                    self.player_shell.move(z=1)
-                    self.save_cords = self.player_shell.centre
-                else:
-                    self.jump = False
-                    self.player_shell.move(z=1)
-
-            elif self.state == 1:
+                c = d3.Cuboid([0,88,-50],[40,40,40])
+                c.colour = "grey"
+                window.add(c)
+                self.solids.add(c)
                 
-                window.horizontal_rotation = 160-degrees(cos(radians(self.player_shell.centre[1]/2)))/6
-                window.vertical_rotation = 175+degrees(cos(radians(self.player_shell.centre[2]/4)))/2
-                window.centre(self.player_shell.centre)
+                c = d3.Cuboid([-98,88,-50],[40,40,40])
+                c.colour = "gold"
+                window.add(c)
+                self.solids.add(c)
+                
+                c = d3.Cuboid([-180,88,-90],[40,40,40])
+                c.colour = "grey"
+                window.add(c)
+                self.solids.add(c)
 
-                self.move(window)
+                c = d3.Cuboid([-180,200,-90],[40,40,40])
+                c.colour = "grey"
+                window.add(c)
+                self.solids.add(c)
+                
+                c = d3.Cuboid([-240,300,-90],[40,40,40])
+                c.colour = "gold"
+                window.add(c)
+                self.solids.add(c)
 
-                if len(self.player_shell.cuboids) == 0:
-                    self.state_change = True
-                    self.lost_limbs = []
+                c = d3.Cuboid([-300,300,40],[40,40,40])
+                c.colour = "green"
+                window.add(c)
+                self.solids.add(c)
 
-                self.player_shell.move(z=-1)
-                if self.player_shell.touching(self.win):
-                    self.state_change = True
-                    self.state = 1
-                    self.lost_limbs = []
-                    self.player_shell.move(z=1)
-                    self.save_cords = self.player_shell.centre
-                else:
-                    self.jump = False
-                    self.player_shell.move(z=1)
+                self.win = d3.Cuboid([-350,300,50],[40,40,40])
+                self.win.colour = "red"
+                window.add(self.win)
+                self.solids.add(self.win)
+                
+                window.vertical_rotation = 195
+                window.horizontal_rotation = 250
 
+                self.state_change = False
 
+            elif self.state == 3:
+                window.clear()
+                window.add(self.player_shell)
+                self.player_load(self.save_cords[0],self.save_cords[1],self.save_cords[2])
+
+                self.solids.cuboids = []
+
+                c = d3.Cuboid([0,0,-50],[40,40,40])
+                c.colour = "grey"
+                window.add(c)
+                self.solids.add(c)
+                
+                c = d3.Cuboid([0,88,-50],[40,40,40])
+                c.colour = "grey"
+                window.add(c)
+                self.solids.add(c)
+                
+                c = d3.Cuboid([-98,88,-50],[40,40,40])
+                c.colour = "gold"
+                window.add(c)
+                self.solids.add(c)
+                
+                c = d3.Cuboid([-180,88,-90],[40,40,40])
+                c.colour = "grey"
+                window.add(c)
+                self.solids.add(c)
+
+                c = d3.Cuboid([-180,200,-90],[40,40,40])
+                c.colour = "grey"
+                window.add(c)
+                self.solids.add(c)
+                
+                c = d3.Cuboid([-240,300,-90],[40,40,40])
+                c.colour = "gold"
+                window.add(c)
+                self.solids.add(c)
+
+                c = d3.Cuboid([-300,300,40],[40,40,40])
+                c.colour = "grey"
+                window.add(c)
+                self.solids.add(c)
+
+                c = d3.Cuboid([-350,300,50],[40,40,40])
+                c.colour = "gold"
+                window.add(c)
+                self.solids.add(c)
+
+                c = d3.Cuboid([-490,220,50],[40,40,40])
+                c.colour = "green"
+                window.add(c)
+                self.solids.add(c)
+
+                c = d3.Cuboid([-460,300,50],[40,40,40])
+                c.colour = "green"
+                window.add(c)
+                self.solids.add(c)
+
+                c = d3.Cuboid([-490,300,50],[40,40,40])
+                c.colour = "green"
+                window.add(c)
+                self.solids.add(c)
+
+                c = d3.Cuboid([-560,300,50],[40,40,40])
+                c.colour = "green"
+                window.add(c)
+                self.solids.add(c)
+
+                c = d3.Cuboid([-599,300,50],[40,40,40])
+                c.colour = "green"
+                window.add(c)
+                self.solids.add(c)
+
+                c = d3.Cuboid([-650,300,50],[40,40,40])
+                c.colour = "green"
+                window.add(c)
+                self.solids.add(c)
+                
+                window.vertical_rotation = 195
+                window.horizontal_rotation = 250
+
+                self.state_change = False
+                
+                
+        
+        if self.state == 0:
+            
+            window.horizontal_rotation = 160-degrees(cos(radians(self.player_shell.centre[1]/2)))/6
+            window.vertical_rotation = 175+degrees(cos(radians(self.player_shell.centre[2]/4)))/2
+            window.centre(self.player_shell.centre)
+
+            self.move(window)
+
+            if len(self.player_shell.cuboids) == 0:
+                self.state_change = True
+                self.lost_limbs = []
+
+            self.player_shell.move(z=-1)
+            if self.player_shell.touching(self.win):
+                self.state_change = True
+                self.state = 1
+                self.lost_limbs = []
+                self.player_shell.move(z=2)
+                self.save_cords = self.player_shell.centre
+            else:
+                self.jump = False
+                self.player_shell.move(z=1)
+
+        elif self.state == 1:
+            
+            window.horizontal_rotation = 160-degrees(cos(radians(self.player_shell.centre[1]/2)))/6
+            window.vertical_rotation = 175+degrees(cos(radians(self.player_shell.centre[2]/4)))/2
+            window.centre(self.player_shell.centre)
+            
+            self.move(window)
+
+            if len(self.player_shell.cuboids) == 0:
+                self.state_change = True
+                self.state = 0
+                self.lost_limbs = []
+
+            self.player_shell.move(z=-1)
+            if self.player_shell.touching(self.win):
+                self.state_change = True
+                self.state = 2
+                self.lost_limbs = []
+                self.player_shell.move(z=1)
+                self.save_cords = self.player_shell.centre
+            else:
+                self.jump = False
+                self.player_shell.move(z=1)
+
+        elif self.state == 2:
+            
+            window.horizontal_rotation = 160-degrees(cos(radians(self.player_shell.centre[1]/2)))/6
+            window.vertical_rotation = 175+degrees(cos(radians(self.player_shell.centre[2]/4)))/2
+            window.centre(self.player_shell.centre)
+            
+            self.move(window)
+
+            if len(self.player_shell.cuboids) == 0:
+                self.state_change = True
+                self.state = 0
+                self.lost_limbs = []
+
+            self.player_shell.move(z=-1)
+            if self.player_shell.touching(self.win):
+                self.state_change = True
+                self.state = 3
+                self.lost_limbs = []
+                self.player_shell.move(z=1)
+                self.save_cords = self.player_shell.centre
+            else:
+                self.jump = False
+                self.player_shell.move(z=1)
+
+        elif self.state == 3:
+            
+            window.horizontal_rotation = 160-degrees(cos(radians(self.player_shell.centre[1]/2)))/6
+            window.vertical_rotation = 175+degrees(cos(radians(self.player_shell.centre[2]/4)))/2
+            window.centre(self.player_shell.centre)
+            
+            self.move(window)
+
+            if len(self.player_shell.cuboids) == 0:
+                self.state_change = True
+                self.state = 0
+                self.lost_limbs = []
+
+            self.player_shell.move(z=-1)
+            if self.player_shell.touching(self.win):
+                self.state_change = True
+                self.state = 3
+                self.lost_limbs = []
+                self.player_shell.move(z=1)
+                self.save_cords = self.player_shell.centre
+            else:
+                self.jump = False
+                self.player_shell.move(z=1)
+
+            
 
             
             
