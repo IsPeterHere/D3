@@ -334,23 +334,23 @@ class Game(Tools):
                 window.add(c)
                 self.solids.add(c)
 
-                c = d3.Cuboid([-490,300,50],[40,40,40])
+                c = d3.Cuboid([-530,300,50],[40,40,40])
                 c.colour = "green"
                 window.add(c)
                 self.solids.add(c)
 
-                c = d3.Cuboid([-560,300,50],[40,40,40])
+                c = d3.Cuboid([-580,300,50],[40,40,40])
                 c.colour = "green"
                 window.add(c)
                 self.solids.add(c)
 
-                c = d3.Cuboid([-599,300,50],[40,40,40])
+                c = d3.Cuboid([-620,300,50],[40,40,40])
                 c.colour = "green"
                 window.add(c)
                 self.solids.add(c)
 
-                c = d3.Cuboid([-650,300,50],[40,40,40])
-                c.colour = "green"
+                c = d3.Cuboid([-700,300,50],[40,40,40])
+                c.colour = "blue"
                 window.add(c)
                 self.solids.add(c)
                 
