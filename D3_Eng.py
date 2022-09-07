@@ -56,14 +56,14 @@ class Cuboid:
         if new == None:
             return self.__centre
         else:
-            __centre = new
+            self.__centre = new
             self.faces = tools.GetFaces(self.__extent,self.__centre)
 
     def extent(self,new = None):
         if new == None:
             return self.__extent
         else:
-            __extent = new
+            self.__extent = new
             self.faces = tools.GetFaces(self.__extent,self.__centre)
 
     def touching(self,other_cuboid):
