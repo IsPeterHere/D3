@@ -27,25 +27,7 @@ class Tools:
         self.Move_group.cuboid_group = self.player_shell
         
         self.limbs = [self.body,self.arm,self.arm2,self.leg,self.leg2,self.head]
-        
-    def player_forward(self,x,y,z):
-        
-        self.leg.centre([10,0,44])
-        
-        self.leg2.centre([-10,0,44])
-        
-        self.arm.centre([15,0,44])
-        
-        self.arm2.centre([-15,0,44])
-
-    def player_side(self,x,y,z):
-        self.leg.centre([0,10,44])
-        
-        self.leg2.centre([0,-10,44])
-        
-        self.arm.centre([0,15,44])
-        
-        self.arm2.centre([0,-15,44])
+    
 
     def less_limb(self,window):
         if len(self.limbs) > 0:
@@ -87,19 +69,15 @@ class Tools:
         self.Move_group.call(z = -2)
                 
         if "w" in window.inputs:
-            self.player_forward(self.player_shell.centre[0],self.player_shell.centre[1],self.player_shell.centre[2])
             self.Move_group.y_speed = 4
         
         elif "s" in window.inputs:
-            self.player_forward(self.player_shell.centre[0],self.player_shell.centre[1],self.player_shell.centre[2])
             self.Move_group.y_speed = -4
             
-        if "a" in window.inputs:
-            self.player_side(self.player_shell.centre[0],self.player_shell.centre[1],self.player_shell.centre[2])
+        if "d" in window.inputs:
             self.Move_group.x_speed = 4
             
-        elif "d" in window.inputs:
-            self.player_side(self.player_shell.centre[0],self.player_shell.centre[1],self.player_shell.centre[2])
+        elif "a" in window.inputs:
             self.Move_group.x_speed = -4
 
         if self.jump == False:
@@ -161,7 +139,6 @@ class Game(Tools):
                 self.player_load(0,0,0)
                 self.player_shell.centre = [0,0,0]
 
-                self.player_forward(0,0,0)
                 window.add(self.player_shell)
 
                 c = d3.Cuboid([0,0,-50],[40,40,40])
