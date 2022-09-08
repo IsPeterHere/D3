@@ -2,6 +2,7 @@ import D3_Eng as d3
 import D3_Dynamics as d3d
 import random
 from math import cos,radians,degrees
+import time
 
 class Tools:
     def player_load(self,x,y,z):
@@ -22,19 +23,19 @@ class Tools:
                 
         if "s" in window.inputs:
             self.Move_group.y_speed = 4
-            self.direction = False
+            self.direction = 120
         
         elif "w" in window.inputs:
             self.Move_group.y_speed = -4
-            self.direction = False
+            self.direction = 160
             
         if "a" in window.inputs:
             self.Move_group.x_speed = 4
-            self.direction = True
+            self.direction = 135
             
         elif "d" in window.inputs:
             self.Move_group.x_speed = -4
-            self.direction = True
+            self.direction = 230
 
         if self.jump == False:
             self.player_shell.move(z=-1)
@@ -48,6 +49,7 @@ class Tools:
          
         if self.jump ==  True:
             if " " in window.inputs:
+                self.jumps += 1
                 self.Move_group.z_speed = 25
                 self.jump = False
             
@@ -58,7 +60,7 @@ class Game(Tools):
         self.hr = 160
         self.vr = 210
 
-        self.direction = False
+        self.direction = 160
         self.jump = False
 
     
@@ -75,6 +77,12 @@ class Game(Tools):
     def Set(self,window):
 
         window.clear()
+        
+        self.start = time.time()
+        self.jumps = 0
+        
+        self.hr = 160
+        self.vr = 210
         
         self.solids = d3.Cuboid_group([0,0,0])
         self.player_shell = d3.Cuboid_group([0,0,0])
@@ -99,18 +107,12 @@ class Game(Tools):
         
 
     def main(self,window):
-        if self.direction == False:
-            if self.hr != 160:
-                if self.hr > 160:
-                    self.hr += -1
-                else:
-                    self.hr += 1
-        else:
-            if self.hr != 130:
-                if self.hr > 130:
-                    self.hr += -1
-                else:
-                    self.hr += 1
+        if self.hr != self.direction:
+            if self.hr > self.direction:
+                self.hr += -1
+            else:
+                self.hr += 1
+
 
         
         window.horizontal_rotation = self.hr-degrees(cos(radians(self.player_shell.centre[1]/2)))/6
@@ -123,10 +125,10 @@ class Game(Tools):
 
             block.move(z=1)
             if self.player_shell.touching(block):
-                block.colour = "yellow"
+                block.colour = "purple"
                 block.move(z=-1)
             else:
-                if block.colour == "yellow":
+                if block.colour == "purple":
                     block.colour = "green"
                 else:
                     block.move(z = random.randint(1,15))
@@ -143,15 +145,31 @@ class Game(Tools):
         for i in self.blocks:
             for e in i:
                 if e.centre()[2] > avg:
-                    if e.colour != "yellow":
+                    if e.colour != "purple":
                         e.colour = "green"
                 else:
                     e.colour = "red"
+                    self.player_shell.move(z=-1)
+                    if self.player_shell.touching(e):
+                        end = time.time()
+                        print('Time Alive = ',end-self.start)
+                        print('Jumps Made:',self.jumps)
+                        print(" ")
+                        self.Set(window)
+                        self.player_shell.move(z=1)
+                    else:
+                        self.player_shell.move(z=1)
+                    
                     
         if self.player_shell.centre[2] < -700 :
+            end = time.time()
+            print('Time Alive =; ',end-self.start)
+            print('Jumps Made:',self.jumps)
+            print(" ")
             self.Set(window)
-                
+        
         self.move(window)
+
 
 
             
