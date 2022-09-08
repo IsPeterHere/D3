@@ -161,6 +161,7 @@ class Window(tools.Bindings):
         self.inputs = []
         #-----
         end = time.time()
+        self.true_time = int(((end-start)-0.05)*1000)
         self.pause = max(1,int(50-((end-start)*1000)))
         self.window.after(self.pause,self.__next)
 
