@@ -140,7 +140,7 @@ class Game(Tools):
             for e in i:
                 avg += e.centre()[2]
                 leng +=1
-        avg = (avg/leng) - 35
+        avg = (avg/leng) - 15
 
         for i in self.blocks:
             for e in i:
