@@ -21,6 +21,7 @@ class Game:
         g = 0
         b = 0
         
+        
         if x > (self.mapsize[0]/2):
             b = 255
             r = int(255-(x-self.mapsize[0]/2)*255/self.mapsize[0])
@@ -34,8 +35,9 @@ class Game:
         elif y < (self.mapsize[1]/2):
             r = 255
             g = int(y*255/self.mapsize[1])*2
-            
-        print(r,g,b,f"#{r:02x}{g:02x}{b:02x}",x,y)
+
+
+        #print(r,g,b,f"#{r:02x}{g:02x}{b:02x}",x,y)
         return f"#{r:02x}{g:02x}{b:02x}"
 
     def move(self,window):
