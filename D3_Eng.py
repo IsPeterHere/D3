@@ -109,12 +109,13 @@ class Window(tools.Bindings):
         self.vertical_rotation = 180
         self.distance = 600
         self.render_depth = 3000
+        self.true_time = 0
         self.x = 0
         self.y = 0
         self.z = 0
 
         self.cuboids = []
-
+        
         self.monitored_current = []
         self.inputs = []
         self.log_inputs = []

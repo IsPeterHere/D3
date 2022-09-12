@@ -98,7 +98,8 @@ class Game(Tools):
         for x in range(self.mapsize):
             self.blocks.append([])
             for y in range(self.mapsize):
-                c = d3.Cuboid([x*80,y*80,-x*y],[40,40,40])
+                size = random.randint(10,40)
+                c = d3.Cuboid([x*80,y*80,-x*y],[size,size,size])
                 c.colour = "green"
                 window.add(c)
                 self.solids.add(c)
