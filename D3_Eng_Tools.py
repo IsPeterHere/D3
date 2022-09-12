@@ -121,7 +121,7 @@ class Cart_maths:
         return [x,y,z]
 
     def cart(self,cord):
-        x = cord[0] + self.window_x
-        y = cord[1] + self.window_y
-        z = cord[2] + self.window_z
+        x = cord[0] - self.window_x
+        y = cord[1] - self.window_y
+        z = cord[2] - self.window_z
         return self.Circle(atan2(radians(y),radians(x)),sqrt(x**2+y**2),z)

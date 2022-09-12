@@ -54,26 +54,37 @@ class Cuboid:
 
     def centre(self,new = None):
         if new == None:
-            if key == None:
-                return self.__centre
+            return self.__centre
         else:
-            __centre = new
+            self.__centre = new
             self.faces = tools.GetFaces(self.__extent,self.__centre)
 
-    def touching(self,cuboid):
-        if self.__centre[0]+self.__extent[0]/2-cuboid.__centre[0]+cuboid.__extent[0]/2 > 0:
-            return True
-            if self.__centre[1]+self.__extent[1]/2-cuboid.__centre[1]+cuboid.__extent[1]/2 > 0:
-                return True
-                if self.__centre[2]+self.__extent[2]/2-cuboid.__centre[2]+cuboid.__extent[2]/2 > 0:
+    def extent(self,new = None):
+        if new == None:
+            return self.__extent
+        else:
+            self.__extent = new
+            self.faces = tools.GetFaces(self.__extent,self.__centre)
+
+    def touching(self,other_cuboid):
+        if self == other_cuboid:
+            return False
+        
+        if abs(self.centre()[0] -other_cuboid.centre()[0]) < abs(self.extent()[0]/2+other_cuboid.extent()[0]/2):
+            if abs(self.centre()[1] -other_cuboid.centre()[1]) < abs(self.extent()[1]/2+other_cuboid.extent()[1]/2):
+                if abs(self.centre()[2] -other_cuboid.centre()[2]) < abs(self.extent()[2]/2+other_cuboid.extent()[2]/2):
                     return True
+        
         return False
 
     def move(self,x=0,y=0,z=0):
-        print(self.__centre)
         self.__centre[0]+= x
         self.__centre[1]+= y
         self.__centre[2]+= z
+        self.faces = tools.GetFaces(self.__extent,self.__centre)
+
+    def set_pos(self,cord):
+        self.__centre = cord
         self.faces = tools.GetFaces(self.__extent,self.__centre)
 
 class Window(tools.Bindings):
@@ -98,14 +109,13 @@ class Window(tools.Bindings):
         self.vertical_rotation = 180
         self.distance = 600
         self.render_depth = 3000
+        self.true_time = 0
         self.x = 0
         self.y = 0
         self.z = 0
 
-        self.frame_number = 0
-
         self.cuboids = []
-
+        
         self.monitored_current = []
         self.inputs = []
         self.log_inputs = []
@@ -113,11 +123,20 @@ class Window(tools.Bindings):
         self.l_is_pressed = False
 
 
-    def add(self,cuboid):
-        self.cuboids.append(cuboid)
+    def add(self,cuboid_shell):
+        if isinstance(cuboid_shell,Cuboid_group):
+            for cuboid in cuboid_shell.cuboids:
+                if cuboid not in self.cuboids:
+                    self.cuboids.append(cuboid)
+        else:  
+            self.cuboids.append(cuboid_shell)
 
-    def remove(self,cuboid):
-        self.cuboids.remove(cuboid)
+    def remove(self,cuboid_shell):
+        if isinstance(cuboid_shell,Cuboid_group):
+            for cuboid in cuboid_shell.cuboids:
+                self.cuboids.remove(cuboid)
+        else:  
+            self.cuboids.remove(cuboid_shell)
 
     def start(self,frame_function = None):
         if frame_function == None:
@@ -137,15 +156,13 @@ class Window(tools.Bindings):
 
         self.cart_maths.update(self)
         self.__render()
-
         self.width = self.window.winfo_width()
         self.height = self.window.winfo_height()
         
         self.inputs = []
-
-        self.frame_number += 1
         #-----
         end = time.time()
+        self.true_time = int(((end-start)-0.05)*1000)
         self.pause = max(1,int(50-((end-start)*1000)))
         self.window.after(self.pause,self.__next)
 
@@ -184,15 +201,27 @@ class Window(tools.Bindings):
 
 
         #clar screen and draw all objects
-        self.clear()
+        self.__clear()
         
     
         for face in self.faces_to_render:
             face.draw(self.canvas)
 
         
-    def clear(self):
+    def __clear(self):
         self.canvas.delete("all")
+
+    def clear(self):
+        self.cuboids = []
+
+    def centre(self,cord = None):
+
+        if cord == None:
+            return [self.x,self.y,self.z]
+        else:
+            self.x = cord[0]
+            self.y = cord[1]
+            self.z = cord[2]
         
         
 def mouse_direction(window):
@@ -202,13 +231,64 @@ def mouse_direction(window):
         window.horizontal_rotation += (window.width/2-window.mouse_current_position[0])/100
     elif window.mouse_current_position[0]+40 < window.width/2:
         window.horizontal_rotation += (window.width/2-window.mouse_current_position[0])/100
+    
     if window.mouse_current_position[1]-40 > window.height/2:
         window.vertical_rotation +=(window.height/2-window.mouse_current_position[1])/100
     elif window.mouse_current_position[1]+40 < window.height/2:
         window.vertical_rotation +=(window.height/2-window.mouse_current_position[1])/100
+    
 
 
+class Cuboid_group:
 
+    def __init__(self,centre):
+        self.cuboids = []
+        self.centre = centre
+
+    def add(self,cuboid_s):
+        if isinstance(cuboid_s,list):
+            for c in cuboid_s:
+                self.cuboids.add(c)
+        else:
+            self.cuboids.append(cuboid_s)
+
+    def remove(self,cuboid_s):
+        if isinstance(cuboid_s,list):
+            for c in cuboid_s:
+                self.cuboids.remove(c)
+        else:
+            self.cuboids.remove(cuboid_s)
+                
+
+    def touching(self,cuboid_or_group):
+        if isinstance(cuboid_or_group,Cuboid_group):
+            for self_c in self.cuboids:
+                for other_c in cuboid_or_group.cuboids:
+                    if self_c.touching(other_c):
+                        return True
+        else:
+            for self_c in self.cuboids:
+                if self_c.touching(cuboid_or_group):
+                        return True
+        return False
+
+    def move(self,x=0,y=0,z=0):
+        for c in self.cuboids:
+            c.move(x,y,z)
+        self.centre[0] += x
+        self.centre[1] += y
+        self.centre[2] += z
+
+    def set_pos(self,cord):
+        change_x = -self.centre[0] + cord[0]
+        chnage_y = -self.centre[1] + cord[1]
+        chnage_z = -self.centre[2] + cord[2]
+        for c in self.cuboids:
+            c.move(change_x,chnage_y,chnage_z)
+        self.centre[0] = cord[0]
+        self.centre[1] = cord[1]
+        self.centre[2] = cord[2]
+    
 
 if __name__ == "__main__":
          
