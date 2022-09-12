@@ -26,16 +26,16 @@ class Game:
             r = int(255-(x-self.mapsize[0]/2)*255/self.mapsize[0])
         elif x < (self.mapsize[0]/2):
             r = 255
-            b = x*2
+            b = int(x*255/self.mapsize[0])*2
 
         if y > (self.mapsize[1]/2):
             g = 255
             r = int(255-(y-self.mapsize[1]/2)*255/self.mapsize[1])
         elif y < (self.mapsize[1]/2):
             r = 255
-            g = x*2
+            g = int(y*255/self.mapsize[1])*2
             
-        #print(r,g,b,f"#{r:02x}{g:02x}{b:02x}",x,y)
+        print(r,g,b,f"#{r:02x}{g:02x}{b:02x}",x,y)
         return f"#{r:02x}{g:02x}{b:02x}"
 
     def move(self,window):
@@ -57,7 +57,7 @@ class Game:
         if "e" in window.inputs:
             print(window.render_depth)
         
-        """if window.true_time > 0:
+        if window.true_time > 0:
             window.render_depth -= (window.true_time**2)-window.true_time/1.5
         else:
             window.render_depth += (window.true_time**2)-window.true_time/1.5
@@ -66,7 +66,7 @@ class Game:
         elif window.render_depth < 20:
             window.render_depth = self.past
         self.past = window.render_depth
-        """
+        
         
     def start(self):
         window = d3.Window(400,400)
