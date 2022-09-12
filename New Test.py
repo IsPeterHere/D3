@@ -11,31 +11,32 @@ class Game:
         self.hr = 160
         self.vr = 210
         self.past = 3000
+        self.wave_toggle = True
 
         col_file = open("hex_colours.txt","r")
         self.col_arr = col_file.read().split("\n")
         col_file.close()
     
     def get_hex(self,x,y):
-        r = 0
-        g = 0
-        b = 0
+        r = int(255-((x-self.mapsize[0]/2)*255/self.mapsize[0])-((y-self.mapsize[0]/2)*255/self.mapsize[0]))
+        g = 255
+        b = 255
         
-        if x > (self.mapsize[0]/2):
+        if x > (self.mapsize[0]/2) and y < (self.mapsize[1]/2):
             b = 255
-            r = int(255-(x-self.mapsize[0]/2)*255/self.mapsize[0])
+            r = int(255-((x-self.mapsize[0]/2)*255/self.mapsize[0])*2)
         elif x < (self.mapsize[0]/2):
             r = 255
-            b = x*2
+            b = int(x*255/self.mapsize[0])*2
 
-        if y > (self.mapsize[1]/2):
+        if y > (self.mapsize[1]/2) and x < (self.mapsize[0]/2):
             g = 255
-            r = int(255-(y-self.mapsize[1]/2)*255/self.mapsize[1])
+            r = int(255-((y-self.mapsize[1]/2)*255/self.mapsize[1])*2)
         elif y < (self.mapsize[1]/2):
-            r = 255
-            g = x*2
-            
-        #print(r,g,b,f"#{r:02x}{g:02x}{b:02x}",x,y)
+            if x < (self.mapsize[0]/2):
+                r = 255
+            g = int(y*255/self.mapsize[1])*2
+
         return f"#{r:02x}{g:02x}{b:02x}"
 
     def move(self,window):
@@ -57,7 +58,14 @@ class Game:
         if "e" in window.inputs:
             print(window.render_depth)
         
-        """if window.true_time > 0:
+        if "t" in window.inputs:
+            if self.wave_toggle == True:
+                self.wave_toggle = False
+            else:
+                self.wave_toggle = True
+        
+        """
+        if window.true_time > 0:
             window.render_depth -= (window.true_time**2)-window.true_time/1.5
         else:
             window.render_depth += (window.true_time**2)-window.true_time/1.5
@@ -67,6 +75,7 @@ class Game:
             window.render_depth = self.past
         self.past = window.render_depth
         """
+        
         
     def start(self):
         window = d3.Window(400,400)
@@ -97,17 +106,24 @@ class Game:
 
                 self.blocks[x].append(c)
         
+        #test block
+        c = d3.Cuboid([-80,-80,0],[40,40,40])
+        c.colour = "#FF00FF"
+        window.add(c)
+        
 
     def main(self,window):
         window.horizontal_rotation = self.hr
         window.vertical_rotation = self.vr
         self.move(window)
 
-        for e in self.blocks:
-            self.count += 0.01
-            for i in e:
+        if self.wave_toggle == True:
+            for e in self.blocks:
+             self.count += 0.01
+             for i in e:
                 self.count += -0.01
                 i.move(z = 50*cos(self.count))
+        
 
 game = Game()
 game.start()
