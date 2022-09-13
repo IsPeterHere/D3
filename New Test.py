@@ -106,11 +106,6 @@ class Game:
 
                 self.blocks[x].append(c)
         
-        #test block
-        c = d3.Cuboid([-80,-80,0],[40,40,40])
-        c.colour = "#FF00FF"
-        window.add(c)
-        
 
     def main(self,window):
         window.horizontal_rotation = self.hr
