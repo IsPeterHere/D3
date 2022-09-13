@@ -14,13 +14,13 @@ class Game:
         self.last_mark = -1
         self.solids = d3.Cuboid_group([0,0,0])
         self.old_solids = d3.Cuboid_group([0,0,0])
-        self.colour = "green"
         self.g_y = 0
         self.jump = True
         self.b_jump = True
         self.last_pos = [0,0,0]
         self.min = 5
         self.max = 60
+        self.rgb = [255,0,0,0,15,0]
 
 
         self.player_shell = d3.Cuboid_group([0,0,40])
@@ -44,13 +44,37 @@ class Game:
         
         w.start(self.main)
 
+    def get_rgb(self):
+        if (self.rgb[1] == 255 and self.rgb[4] == 15) or (self.rgb[2] == 0 and self.rgb[4] == -15):
+            self.rgb[3] = -15
+            self.rgb[4] = 0
+        elif self.rgb[0] == 0 and self.rgb[3] == -15:
+            self.rgb[5] = 15
+            self.rgb[3] = 0
+        elif self.rgb[2] == 255 and self.rgb[5] == 15:
+            self.rgb[4] = -15
+            self.rgb[5] = 0
+        elif self.rgb[1] == 0 and self.rgb[4] == -15:
+            self.rgb[3] = 15
+            self.rgb[4] = 0
+        elif self.rgb[0] == 255 and self.rgb[3] == 15:
+            self.rgb[4] = -15
+            self.rgb[3] = 0
+        
+        for colour in range(3):
+            self.rgb[colour] += self.rgb[colour+3]
+
+        
+        print(self.rgb)
+        return f"#{self.rgb[0]:02x}{self.rgb[1]:02x}{self.rgb[2]:02x}"
+        
     def load_new(self,window):
         new_solids = d3.Cuboid_group([0,0,0])
     
         for i in range(20):
             size = random.randint(self.min,self.max)
             c = d3.Cuboid([0,self.last_mark*60+60*i+(random.randint(-22,10)),-30+self.g_y*42],[size,size,size])
-            c.colour = self.colour
+            c.colour = self.get_rgb()
             new_solids.add(c)
 
         return new_solids
@@ -81,14 +105,14 @@ class Game:
                 self.max = random.randint(4,53)
                 while self.max < self.min:
                     self.max = random.randint(4,60)
-                self.colour = random.choice(['green','yellow','pink','brown'])
+                
             elif i == 2:
                 self.min = random.randint(3,44)
                 self.max = random.randint(4,53)
                 while self.max < self.min:
                     self.max = random.randint(4,60)
                 self.g_y += -0.5
-                self.colour = random.choice(['green','yellow','pink','brown'])
+                
 
             self.g_y = min(8,max(-8,self.g_y))
             
