@@ -68,16 +68,16 @@ class Tools:
     def move(self,window):
         self.Move_group.call(z = -2)
                 
-        if "w" in window.inputs:
+        if "s" in window.inputs:
             self.Move_group.y_speed = 4
         
-        elif "s" in window.inputs:
+        elif "w" in window.inputs:
             self.Move_group.y_speed = -4
             
-        if "d" in window.inputs:
+        if "a" in window.inputs:
             self.Move_group.x_speed = 4
             
-        elif "a" in window.inputs:
+        elif "d" in window.inputs:
             self.Move_group.x_speed = -4
 
         if self.jump == False:
